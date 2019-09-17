@@ -1,6 +1,7 @@
 package model;
+import java.util.Comparator;
 
-public class Ninja {
+public class Ninja implements Comparable<Ninja>{
 	
 	private String name;
 	private String personality;
@@ -71,5 +72,54 @@ public class Ninja {
 
 	public void setFirst(Technique first) {
 		this.first = first;
+	}
+
+	@Override
+	public int compareTo(Ninja e) {
+		return name.compareTo(e.getName());
+	}
+	
+	public boolean addTechnique(Technique e) throws SameName {
+		boolean added = false;
+		if(!sameTechnique(e)) {
+			if(first == null) {
+				first = e;
+			}
+			else if(first.compare(first, e) < 0) {
+				e.setNext(first);
+				first = e;
+				added = true;
+			}
+			else {
+				Technique actual = first;
+				while(actual != null && actual.getNext() != null && !added) {
+					if(actual.getNext().compare(actual.getNext(), e) < 0) {
+						actual.insertAfter(e);
+						added = true;
+					}
+					actual = actual.getNext();
+				}
+				if(!added && actual != null) {
+					actual.setNext(e);
+					added = true;
+				}
+			}
+		}
+		else {
+			throw new SameName();
+		}
+		return added;
+	}
+	
+	public boolean sameTechnique(Technique e) {
+		boolean same = false;
+		Technique actual = first;
+		while(actual != null && !same) {
+			if(actual.compareTo(e) == 0) {
+				same = true;
+			}
+			actual = actual.getNext();
+		}
+		return same;
 	}
 }
