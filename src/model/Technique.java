@@ -1,7 +1,8 @@
 package model;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class Technique implements Comparator<Technique>, Comparable<Technique>{
+public class Technique implements Comparator<Technique>, Comparable<Technique>, Serializable{
 	
 	private String name;
 	private double factor;

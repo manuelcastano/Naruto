@@ -9,8 +9,9 @@ public class Game {
 	
 	private ArrayList<Clan> clans;
 
-	public Game() {
+	public Game() throws ClassNotFoundException, IOException {
 		clans = new ArrayList<Clan>();
+		loadData();
 	}
 
 	public ArrayList<Clan> getClans() {
@@ -79,5 +80,67 @@ public class Game {
 			oos.writeObject(clans.get(i));
 		}
 		oos.close();
+	}
+	
+	public boolean addNinja(Ninja e, String nameClan) throws SameName, IOException {
+		for(int i = 0; i < clans.size(); i++) {
+			if(clans.get(i).sameNinja(e)) {
+				throw new SameName();
+			}
+		}
+		boolean added = false;
+		for(int i = 0; i < clans.size() && !added; i++) {
+			if(clans.get(i).getName().equals(nameClan)) {
+				clans.get(i).addNinja(e);
+				added = true;
+				edit();
+			}
+		}
+		return added;
+	}
+	
+	public boolean addTechnique(Technique e, String nameNinja) throws SameName, IOException {
+		boolean added = false;
+		for(int i = 0; i < clans.size() && !added; i++) {
+			if(clans.get(i).ninjaExist(nameNinja)) {
+				added = clans.get(i).addTechnique(e, nameNinja);
+				edit();
+			}
+		}
+		return added;
+	}
+	
+	public boolean deleteClan(String nameClan) throws IOException {
+		boolean deleted = false;
+		for(int i = 0; i < clans.size() && !deleted; i++) {
+			if(clans.get(i).getName().equals(nameClan)) {
+				clans.remove(i);
+				deleted = true;
+				edit();
+			}
+		}
+		return deleted;
+	}
+	
+	public boolean deleteNinja(String nameNinja) throws IOException {
+		boolean deleted = false;
+		for(int i = 0; i < clans.size() && !deleted; i++) {
+			if(clans.get(i).ninjaExist(nameNinja)) {
+				deleted = clans.get(i).deleteNinja(nameNinja);
+			}
+		}
+		edit();
+		return deleted;
+	}
+	
+	public boolean deleteTechnique(String nameTechnique) throws IOException {
+		boolean deleted = false;
+		for(int i = 0; i < clans.size(); i++) {
+			if(clans.get(i).deleteTechnique(nameTechnique)) {
+				deleted = true;
+			}
+		}
+		edit();
+		return deleted;
 	}
 }

@@ -1,7 +1,7 @@
 package ui;
 
+import java.io.IOException;
 import java.util.Scanner;
-
 import model.*;
 
 public class Main {
@@ -11,9 +11,18 @@ public class Main {
 
 	public Main() {
 		reader = new Scanner(System.in);
-		theGame = new Game();
+		try {
+			theGame = new Game();
+			menu();
+		} catch (ClassNotFoundException | IOException e) {
+			System.out.println(e.getMessage());
+		}
 	}
-
+	
+	public void menu() {
+		
+	}
+	
 	public static void main(String[] args) {
 		Main m = new Main();
 	}

@@ -1,7 +1,8 @@
 package model;
-import java.util.Comparator;
 
-public class Ninja implements Comparable<Ninja>{
+import java.io.Serializable;
+
+public class Ninja implements Comparable<Ninja>, Serializable{
 	
 	private String name;
 	private String personality;
@@ -84,6 +85,7 @@ public class Ninja implements Comparable<Ninja>{
 		if(!sameTechnique(e)) {
 			if(first == null) {
 				first = e;
+				added = true;
 			}
 			else if(first.compare(first, e) < 0) {
 				e.setNext(first);
@@ -121,5 +123,37 @@ public class Ninja implements Comparable<Ninja>{
 			actual = actual.getNext();
 		}
 		return same;
+	}
+	
+	public boolean updateFactor(String nameFactor, double factor) {
+		Technique actual = first;
+		boolean updated = false;
+		while(actual != null && !updated) {
+			if(actual.getName().equals(nameFactor)) {
+				actual.setFactor(factor);
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean deleteTechnique(String nameTechnique) {
+		Technique actual = first;
+		boolean deleted = false;
+		if(actual != null && actual.getName().equals(nameTechnique)) {
+			first = first.getNext();
+			deleted = true;
+		}
+		else {
+			while(actual != null && actual.getNext() != null && !deleted) {
+				if(actual.getNext().getName().equals(nameTechnique)) {
+					actual.setNext(actual.getNext().getNext());
+					deleted = true;
+				}
+				actual = actual.getNext();
+			}
+		}
+		return deleted;
 	}
 }
