@@ -118,4 +118,120 @@ public class Clan implements Comparable<Clan>, Serializable{
 		}
 		return deleted;
 	}
+	
+	public boolean updateNinjaByName(String nameNinja, String newName) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null && !updated) {
+			if(actual.getName().equals(nameNinja)) {
+				actual.setName(newName);
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByPersonality(String nameNinja, String personality) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null && !updated) {
+			if(actual.getName().equals(nameNinja)) {
+				actual.setPersonality(personality);
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByCreationDate(String nameNinja, String creationDate) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null && !updated) {
+			if(actual.getName().equals(nameNinja)) {
+				actual.setCreationDate(creationDate);
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByPower(String nameNinja, double power) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null && !updated) {
+			if(actual.getName().equals(nameNinja)) {
+				actual.setPower(power);
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByScore(String nameNinja, double score) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null && !updated) {
+			if(actual.getName().equals(nameNinja)) {
+				actual.setScore(score);
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean updateTechniqueByFactor(String nameTechnique, double factor) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null) {
+			if(actual.updateTechniqueByFactor(nameTechnique, factor)) {
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public boolean updateTechniqueByName(String nameTechnique, String newName) {
+		boolean updated = false;
+		Ninja actual = first;
+		while(actual != null) {
+			if(actual.updateTechniqueByName(nameTechnique, newName)) {
+				updated = true;
+			}
+			actual = actual.getNext();
+		}
+		return updated;
+	}
+	
+	public Ninja findNinja(String nameNinja) {
+		Ninja e = null;
+		Ninja actual = first;
+		boolean finded = false;
+		while(actual != null && !finded) {
+			if(actual.getName().equals(nameNinja)) {
+				e = actual;
+				finded = true;
+			}
+			actual = actual.getNext();
+		}
+		return e;
+	}
+	
+	public Technique findTechnique(String nameTechnique) {
+		Technique e = null;
+		Ninja actual = first;
+		boolean finded = false;
+		while(actual != null && !finded) {
+			e = actual.findTechnique(nameTechnique);
+			if(e != null) {
+				finded = true;
+			}
+		}
+		return e;
+	}
 }

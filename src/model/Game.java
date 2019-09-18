@@ -143,4 +143,144 @@ public class Game {
 		edit();
 		return deleted;
 	}
+	
+	public boolean updateClanByName(String nameClan, String newName) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size() && !updated; i++) {
+			if(clans.get(i).getName().equals(nameClan)) {
+				clans.get(i).setName(newName);
+				updated = true;
+				edit();
+			}
+		}
+		return updated;
+	}
+	
+	public boolean updateTechniqueByFactor(String nameTechnique, double factor) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size(); i++) {
+			if(clans.get(i).updateTechniqueByFactor(nameTechnique, factor)) {
+				updated = true;
+			}
+		}
+		edit();
+		return updated;
+	}
+	
+	public boolean updateTechniqueByName(String nameTechnique, String newName) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size(); i++) {
+			if(clans.get(i).updateTechniqueByName(nameTechnique, newName)) {
+				updated = true;
+			}
+		}
+		edit();
+		return updated;
+	}
+	
+	public boolean updateNinjaByName(String nameNinja, String newName) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size() && !updated; i++) {
+			updated = clans.get(i).updateNinjaByName(nameNinja, newName);
+			edit();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByPersonality(String nameNinja, String personality) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size() && !updated; i++) {
+			updated = clans.get(i).updateNinjaByPersonality(nameNinja, personality);
+			edit();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByCreationDate(String nameNinja, String creationDate) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size() && !updated; i++) {
+			updated = clans.get(i).updateNinjaByCreationDate(nameNinja, creationDate);
+			edit();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByPower(String nameNinja, double power) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size() && !updated; i++) {
+			updated = clans.get(i).updateNinjaByPower(nameNinja, power);
+			edit();
+		}
+		return updated;
+	}
+	
+	public boolean updateNinjaByScore(String nameNinja, double score) throws IOException {
+		boolean updated = false;
+		for(int i = 0; i < clans.size() && !updated; i++) {
+			updated = clans.get(i).updateNinjaByScore(nameNinja, score);
+			edit();
+		}
+		return updated;
+	}
+	
+	public void orderClansByName() {
+		for(int i = 0; i < clans.size()-1; i++) {
+			Clan less = clans.get(i);
+			int aux= i;
+			for(int j = i+1; j < clans.size(); j++) {
+				if(less.compareTo(clans.get(j)) > 0) {
+					less = clans.get(j);
+					aux = j;
+				}
+			}
+			Clan temp = clans.get(i);
+			clans.set(i, less);
+			clans.set(aux, temp);
+		}
+	}
+	
+	public Clan findBinaryClan(String nameClan) {
+		Clan e = null;
+		boolean finded = false;
+		int start = 0;
+		int end = clans.size()-1;
+		while(start <= end && !finded) {
+			int middle = (start + end)/2;
+			if(clans.get(middle).getName().equals(nameClan)) {
+				e = clans.get(middle);
+				finded = true;
+			}
+			else if(clans.get(middle).getName().compareTo(nameClan) > 0) {
+				end = middle - 1;
+			}
+			else {
+				start = middle +1;
+			}
+		}
+		return e;
+	}
+	
+	public Ninja findNinja(String nameNinja) {
+		Ninja e = null;
+		boolean finded = false;
+		for(int i = 0; i < clans.size() && !finded; i++) {
+			e = clans.get(i).findNinja(nameNinja);
+			if(e != null) {
+				finded = true;
+			}
+		}
+		return e;
+	}
+	
+	public Technique findTechnique(String nameTechnique) {
+		Technique e = null;
+		boolean finded = false;
+		for(int i = 0; i < clans.size() && !finded; i++) {
+			e = clans.get(i).findTechnique(nameTechnique);
+			if(e != null) {
+				finded = true;
+			}
+		}
+		return e;
+	}
 }
