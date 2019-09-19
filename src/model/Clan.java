@@ -1,5 +1,6 @@
 package model;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Clan implements Comparable<Clan>, Serializable{
 	
@@ -233,5 +234,38 @@ public class Clan implements Comparable<Clan>, Serializable{
 			}
 		}
 		return e;
+	}
+	
+	public void orderNinjas() {
+		ArrayList<Ninja> ninjas = new ArrayList<Ninja>();
+		Ninja actual = first;
+		while(actual != null) {
+			ninjas.add(actual);
+			actual = actual.getNext();
+		}
+		for(int i = 1; i < ninjas.size(); i++) {
+			for(int j = i; j > 0; j--) {
+				if(ninjas.get(j-1).compareTo(ninjas.get(j)) > 0) {
+					Ninja aux = ninjas.get(j);
+					ninjas.set(j, ninjas.get(j-1));
+					ninjas.set(j-1, aux);
+				}
+			}
+		}
+		if(!ninjas.isEmpty()) {
+			first = ninjas.get(0);
+		}
+		for(int i = 0; i < ninjas.size(); i++) {
+			boolean added = false;
+			Ninja actual1 = first;
+			while(actual1 != null && !added) {
+				if(actual1.getNext() == null) {
+					actual1.setNext(ninjas.get(i));
+					ninjas.get(i).setPrevious(actual1);
+					added = true;
+				}
+				actual = actual.getNext();
+			}
+		}
 	}
 }

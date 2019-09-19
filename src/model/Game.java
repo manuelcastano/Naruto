@@ -9,7 +9,7 @@ public class Game {
 	
 	private ArrayList<Clan> clans;
 
-	public Game() throws ClassNotFoundException, IOException {
+	public Game() throws ClassNotFoundException, IOException, SameName {
 		clans = new ArrayList<Clan>();
 		loadData();
 	}
@@ -242,19 +242,10 @@ public class Game {
 	public Clan findBinaryClan(String nameClan) {
 		Clan e = null;
 		boolean finded = false;
-		int start = 0;
-		int end = clans.size()-1;
-		while(start <= end && !finded) {
-			int middle = (start + end)/2;
-			if(clans.get(middle).getName().equals(nameClan)) {
-				e = clans.get(middle);
+		for(int i = 0; i< clans.size() && !finded; i++) {
+			if(clans.get(i).getName().equals(nameClan)) {
+				e = clans.get(i);
 				finded = true;
-			}
-			else if(clans.get(middle).getName().compareTo(nameClan) > 0) {
-				end = middle - 1;
-			}
-			else {
-				start = middle +1;
 			}
 		}
 		return e;
@@ -282,5 +273,21 @@ public class Game {
 			}
 		}
 		return e;
+	}
+	
+	public void orderClans() {
+		for(int i = 0; i < clans.size()-1; i++) {
+			Clan less = clans.get(i);
+			int aux= i;
+			for(int j = i+1; j < clans.size(); j++) {
+				if(less.compareTo(clans.get(j)) > 0) {
+					less = clans.get(j);
+					aux = j;
+				}
+			}
+			Clan temp = clans.get(i);
+			clans.set(i, less);
+			clans.set(aux, temp);
+		}
 	}
 }

@@ -14,8 +14,8 @@ public class Main {
 		try {
 			theGame = new Game();
 			menu();
-		} catch (ClassNotFoundException | IOException e) {
-			System.out.println(e.getMessage());
+		} catch (ClassNotFoundException | IOException | SameName e) {
+			e.printStackTrace();
 		}
 	}
 	
