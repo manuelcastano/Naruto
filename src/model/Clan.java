@@ -27,11 +27,11 @@ public class Clan implements Comparable<Clan>, Serializable{
 		this.first = first;
 	}
 
-	public boolean sameNinja(Ninja e) {
+	public boolean sameNinja(String nameNinja) {
 		boolean same = false;
 		Ninja actual = first;
 		while(actual != null && !same) {
-			if(actual.compareTo(e) == 0) {
+			if(actual.getName().equals(nameNinja)) {
 				same = true;
 			}
 			actual = actual.getNext();
@@ -41,7 +41,7 @@ public class Clan implements Comparable<Clan>, Serializable{
 	
 	public boolean addNinja(Ninja e) throws SameName {
 		boolean added = false;
-		if(!sameNinja(e)) {
+		if(!sameNinja(e.getName())) {
 			if(first == null) {
 				first = e;
 			}
@@ -122,13 +122,15 @@ public class Clan implements Comparable<Clan>, Serializable{
 	
 	public boolean updateNinjaByName(String nameNinja, String newName) {
 		boolean updated = false;
-		Ninja actual = first;
-		while(actual != null && !updated) {
-			if(actual.getName().equals(nameNinja)) {
-				actual.setName(newName);
-				updated = true;
+		if(!sameNinja(newName)) {
+			Ninja actual = first;
+			while(actual != null && !updated) {
+				if(actual.getName().equals(nameNinja)) {
+					actual.setName(newName);
+					updated = true;
+				}
+				actual = actual.getNext();
 			}
-			actual = actual.getNext();
 		}
 		return updated;
 	}
@@ -165,19 +167,7 @@ public class Clan implements Comparable<Clan>, Serializable{
 		while(actual != null && !updated) {
 			if(actual.getName().equals(nameNinja)) {
 				actual.setPower(power);
-				updated = true;
-			}
-			actual = actual.getNext();
-		}
-		return updated;
-	}
-	
-	public boolean updateNinjaByScore(String nameNinja, double score) {
-		boolean updated = false;
-		Ninja actual = first;
-		while(actual != null && !updated) {
-			if(actual.getName().equals(nameNinja)) {
-				actual.setScore(score);
+				actual.setScore();
 				updated = true;
 			}
 			actual = actual.getNext();
@@ -197,7 +187,7 @@ public class Clan implements Comparable<Clan>, Serializable{
 		return updated;
 	}
 	
-	public boolean updateTechniqueByName(String nameTechnique, String newName) {
+	public boolean updateTechniqueByName(String nameTechnique, String newName) throws SameName {
 		boolean updated = false;
 		Ninja actual = first;
 		while(actual != null) {
@@ -236,36 +226,32 @@ public class Clan implements Comparable<Clan>, Serializable{
 		return e;
 	}
 	
+	//Burbuja
 	public void orderNinjas() {
-		ArrayList<Ninja> ninjas = new ArrayList<Ninja>();
 		Ninja actual = first;
 		while(actual != null) {
-			ninjas.add(actual);
+			Ninja next = actual.getNext();
+			while(next != null) {
+				if(actual.compare(actual, next) > 0) {
+					actual.setPrevious(next);
+					next.setNext(actual);
+					Ninja temp = next;
+					next = actual;
+					actual = temp;
+				}
+				next = next.getNext();
+			}
 			actual = actual.getNext();
 		}
-		for(int i = 1; i < ninjas.size(); i++) {
-			for(int j = i; j > 0; j--) {
-				if(ninjas.get(j-1).compareTo(ninjas.get(j)) > 0) {
-					Ninja aux = ninjas.get(j);
-					ninjas.set(j, ninjas.get(j-1));
-					ninjas.set(j-1, aux);
-				}
-			}
+	}
+	
+	public String theNinjas() {
+		String msg = "";
+		Ninja actual = first;
+		while(actual != null) {
+			msg += actual+"\n";
+			actual = actual.getNext();
 		}
-		if(!ninjas.isEmpty()) {
-			first = ninjas.get(0);
-		}
-		for(int i = 0; i < ninjas.size(); i++) {
-			boolean added = false;
-			Ninja actual1 = first;
-			while(actual1 != null && !added) {
-				if(actual1.getNext() == null) {
-					actual1.setNext(ninjas.get(i));
-					ninjas.get(i).setPrevious(actual1);
-					added = true;
-				}
-				actual = actual.getNext();
-			}
-		}
+		return msg;
 	}
 }

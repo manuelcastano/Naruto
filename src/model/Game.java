@@ -22,10 +22,10 @@ public class Game {
 		this.clans = clans;
 	}
 	
-	public boolean sameClan(Clan e) {
+	public boolean sameClan(String nameClan) {
 		boolean same = false;
 		for(int i = 0; i < clans.size() && !same; i++) {
-			if(clans.get(i).compareTo(e) == 0) {
+			if(clans.get(i).getName().equals(nameClan)) {
 				same = true;
 			}
 		}
@@ -34,7 +34,8 @@ public class Game {
 	
 	public boolean addClan(Clan e) throws SameName, FileNotFoundException, IOException {
 		boolean added = false;
-		if(!sameClan(e)) {
+		if(!sameClan(e.getName()
+				)) {
 			clans.add(e);
 			added = true;
 			writeClan(e);
@@ -84,7 +85,7 @@ public class Game {
 	
 	public boolean addNinja(Ninja e, String nameClan) throws SameName, IOException {
 		for(int i = 0; i < clans.size(); i++) {
-			if(clans.get(i).sameNinja(e)) {
+			if(clans.get(i).sameNinja(e.getName())) {
 				throw new SameName();
 			}
 		}
@@ -144,14 +145,19 @@ public class Game {
 		return deleted;
 	}
 	
-	public boolean updateClanByName(String nameClan, String newName) throws IOException {
+	public boolean updateClanByName(String nameClan, String newName) throws IOException, SameName {
 		boolean updated = false;
-		for(int i = 0; i < clans.size() && !updated; i++) {
-			if(clans.get(i).getName().equals(nameClan)) {
-				clans.get(i).setName(newName);
-				updated = true;
-				edit();
+		if(!sameClan(newName)) {
+			for(int i = 0; i < clans.size() && !updated; i++) {
+				if(clans.get(i).getName().equals(nameClan)) {
+					clans.get(i).setName(newName);
+					updated = true;
+					edit();
+				}
 			}
+		}
+		else {
+			throw new SameName();
 		}
 		return updated;
 	}
@@ -167,7 +173,7 @@ public class Game {
 		return updated;
 	}
 	
-	public boolean updateTechniqueByName(String nameTechnique, String newName) throws IOException {
+	public boolean updateTechniqueByName(String nameTechnique, String newName) throws IOException, SameName {
 		boolean updated = false;
 		for(int i = 0; i < clans.size(); i++) {
 			if(clans.get(i).updateTechniqueByName(nameTechnique, newName)) {
@@ -209,15 +215,6 @@ public class Game {
 		boolean updated = false;
 		for(int i = 0; i < clans.size() && !updated; i++) {
 			updated = clans.get(i).updateNinjaByPower(nameNinja, power);
-			edit();
-		}
-		return updated;
-	}
-	
-	public boolean updateNinjaByScore(String nameNinja, double score) throws IOException {
-		boolean updated = false;
-		for(int i = 0; i < clans.size() && !updated; i++) {
-			updated = clans.get(i).updateNinjaByScore(nameNinja, score);
 			edit();
 		}
 		return updated;
@@ -275,6 +272,7 @@ public class Game {
 		return e;
 	}
 	
+	//selection
 	public void orderClans() {
 		for(int i = 0; i < clans.size()-1; i++) {
 			Clan less = clans.get(i);

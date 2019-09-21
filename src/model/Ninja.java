@@ -1,8 +1,9 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-public class Ninja implements Comparable<Ninja>, Serializable{
+public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable{
 	
 	private String name;
 	private String personality;
@@ -13,12 +14,18 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 	private Ninja next;
 	private Technique first;
 	
-	public Ninja(String name, String personality, String creationDate, double power, double score) {
+	public Ninja(String name, String personality, String creationDate, double power) {
 		this.name = name;
 		this.personality = personality;
 		this.creationDate = creationDate;
 		this.power = power;
-		this.score = score;
+		setScore();
+	}
+
+	@Override
+	public String toString() {
+		return "Ninja [name=" + name + ", personality=" + personality + ", creationDate=" + creationDate + ", power="
+				+ power + ", score=" + score+"]";
 	}
 
 	public String getName() {
@@ -57,8 +64,12 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 		return score;
 	}
 
-	public void setScore(double score) {
-		this.score = score;
+	public void setScore() {
+		score = 0.0;
+		Technique actual = first;
+		while(actual != null) {
+			score += power*actual.getFactor();
+		}
 	}
 
 	public Ninja getPrevious() {
@@ -92,7 +103,7 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 	
 	public boolean addTechnique(Technique e) throws SameName {
 		boolean added = false;
-		if(!sameTechnique(e)) {
+		if(!sameTechnique(e.getName())) {
 			if(first == null) {
 				first = e;
 				added = true;
@@ -120,14 +131,15 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 		else {
 			throw new SameName();
 		}
+		setScore();
 		return added;
 	}
 	
-	public boolean sameTechnique(Technique e) {
+	public boolean sameTechnique(String nameTechnique) {
 		boolean same = false;
 		Technique actual = first;
 		while(actual != null && !same) {
-			if(actual.compareTo(e) == 0) {
+			if(actual.getName().equals(nameTechnique)) {
 				same = true;
 			}
 			actual = actual.getNext();
@@ -151,6 +163,7 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 				actual = actual.getNext();
 			}
 		}
+		setScore();
 		return deleted;
 	}
 	
@@ -164,18 +177,24 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 			}
 			actual = actual.getNext();
 		}
+		setScore();
 		return updated;
 	}
 	
-	public boolean updateTechniqueByName(String nameTechnique, String newName) {
+	public boolean updateTechniqueByName(String nameTechnique, String newName) throws SameName {
 		Technique actual = first;
 		boolean updated = false;
-		while(actual != null && !updated) {
-			if(actual.getName().equals(nameTechnique)) {
-				actual.setName(newName);
-				updated = true;
+		if(!sameTechnique(nameTechnique)) {
+			while(actual != null && !updated) {
+				if(actual.getName().equals(nameTechnique)) {
+					actual.setName(newName);
+					updated = true;
+				}
+				actual = actual.getNext();
 			}
-			actual = actual.getNext();
+		}
+		else {
+			throw new SameName();
 		}
 		return updated;
 	}
@@ -192,5 +211,17 @@ public class Ninja implements Comparable<Ninja>, Serializable{
 			actual = actual.getNext();
 		}
 		return e;
+	}
+
+	@Override
+	public int compare(Ninja o1, Ninja o2) {
+		int substraction = 0;
+		double x = o1.getPower()-o2.getPower();
+		if(x > 0) {
+			substraction = 1;
+		}else if(x < 0) {
+			substraction = -1;
+		}
+		return substraction;
 	}
 }
