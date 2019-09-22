@@ -9,7 +9,7 @@ public class Game {
 	
 	private ArrayList<Clan> clans;
 
-	public Game() throws ClassNotFoundException, IOException, SameName {
+	public Game() throws ClassNotFoundException, IOException {
 		clans = new ArrayList<Clan>();
 		loadData();
 	}
@@ -34,11 +34,13 @@ public class Game {
 	
 	public boolean addClan(Clan e) throws SameName, FileNotFoundException, IOException {
 		boolean added = false;
-		if(!sameClan(e.getName()
-				)) {
+		if(!sameClan(e.getName())) {
 			clans.add(e);
 			added = true;
-			writeClan(e);
+			File f = new File(ARCHIVE);
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+			oos.writeObject(clans);
+			oos.close();
 		}
 		else {
 			throw new SameName();
@@ -46,27 +48,12 @@ public class Game {
 		return added;
 	}
 	
-	public void writeClan(Clan e) throws FileNotFoundException, IOException {
-		File f = new File(ARCHIVE);
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
-		oos.writeObject(e);
-		oos.close();
-	}
-	
 	public void loadData() throws IOException, ClassNotFoundException {
 		try {
 			File f = new File(ARCHIVE);
 			ObjectInputStream o = new ObjectInputStream(new FileInputStream(f));
-			try {
-				Clan aux = (Clan)o.readObject();
-				while(aux != null) {
-					clans.add(aux);
-					aux = (Clan)o.readObject();
-				}
-				o.close();
-			}catch(IOException e) {
-				o.close();
-			}
+			clans = (ArrayList<Clan>)o.readObject();
+			o.close();
 		}catch(EOFException e) {
 			
 		}
@@ -77,9 +64,7 @@ public class Game {
 		new File(ARCHIVE).createNewFile();
 		File f = new File(ARCHIVE);
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
-		for(int i = 0; i < clans.size(); i++) {
-			oos.writeObject(clans.get(i));
-		}
+		oos.writeObject(clans);
 		oos.close();
 	}
 	
@@ -184,8 +169,13 @@ public class Game {
 		return updated;
 	}
 	
-	public boolean updateNinjaByName(String nameNinja, String newName) throws IOException {
+	public boolean updateNinjaByName(String nameNinja, String newName) throws IOException, SameName {
 		boolean updated = false;
+		for(int i = 0; i < clans.size(); i++) {
+			if(clans.get(i).sameNinja(newName)) {
+				throw new SameName();
+			}
+		}
 		for(int i = 0; i < clans.size() && !updated; i++) {
 			updated = clans.get(i).updateNinjaByName(nameNinja, newName);
 			edit();
@@ -220,23 +210,7 @@ public class Game {
 		return updated;
 	}
 	
-	public void orderClansByName() {
-		for(int i = 0; i < clans.size()-1; i++) {
-			Clan less = clans.get(i);
-			int aux= i;
-			for(int j = i+1; j < clans.size(); j++) {
-				if(less.compareTo(clans.get(j)) > 0) {
-					less = clans.get(j);
-					aux = j;
-				}
-			}
-			Clan temp = clans.get(i);
-			clans.set(i, less);
-			clans.set(aux, temp);
-		}
-	}
-	
-	public Clan findBinaryClan(String nameClan) {
+	public Clan findClan(String nameClan) {
 		Clan e = null;
 		boolean finded = false;
 		for(int i = 0; i< clans.size() && !finded; i++) {
@@ -287,5 +261,35 @@ public class Game {
 			clans.set(i, less);
 			clans.set(aux, temp);
 		}
+	}
+	
+	public void orderNinjas() {
+		for(int i = 0; i < clans.size(); i++) {
+			clans.get(i).orderNinjas();
+		}
+	}
+	
+	public String theTechniques() {
+		String msg = "";
+		for (int i = 0; i < clans.size(); i++) {
+			msg += clans.get(i).theTechniques();
+		}
+		return msg;
+	}
+	
+	public String theNinjas() {
+		String msg = "";
+		for (int i = 0; i < clans.size(); i++) {
+			msg += clans.get(i).theNinjas();
+		}
+		return msg;
+	}
+	
+	public String theClans() {
+		String msg = "";
+		for (int i = 0; i < clans.size(); i++) {
+			msg += clans.get(i)+"\n";
+		}
+		return msg;
 	}
 }

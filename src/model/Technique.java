@@ -4,6 +4,11 @@ import java.util.Comparator;
 
 public class Technique implements Comparator<Technique>, Comparable<Technique>, Serializable{
 	
+	@Override
+	public String toString() {
+		return "name=" + name + ", factor=" + factor;
+	}
+
 	private String name;
 	private double factor;
 	private Technique next;

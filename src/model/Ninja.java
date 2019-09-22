@@ -24,8 +24,8 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 
 	@Override
 	public String toString() {
-		return "Ninja [name=" + name + ", personality=" + personality + ", creationDate=" + creationDate + ", power="
-				+ power + ", score=" + score+"]";
+		return "name=" + name + ", personality=" + personality + ", creationDate=" + creationDate + ", power="
+				+ power + ", score=" + score;
 	}
 
 	public String getName() {
@@ -69,6 +69,7 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 		Technique actual = first;
 		while(actual != null) {
 			score += power*actual.getFactor();
+			actual = actual.getNext();
 		}
 	}
 
@@ -108,7 +109,7 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 				first = e;
 				added = true;
 			}
-			else if(first.compare(first, e) < 0) {
+			else if(first.compare(first, e) > 0) {
 				e.setNext(first);
 				first = e;
 				added = true;
@@ -116,7 +117,7 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 			else {
 				Technique actual = first;
 				while(actual != null && actual.getNext() != null && !added) {
-					if(actual.getNext().compare(actual.getNext(), e) < 0) {
+					if(actual.getNext().compare(actual.getNext(), e) > 0) {
 						actual.insertAfter(e);
 						added = true;
 					}
@@ -184,7 +185,7 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 	public boolean updateTechniqueByName(String nameTechnique, String newName) throws SameName {
 		Technique actual = first;
 		boolean updated = false;
-		if(!sameTechnique(nameTechnique)) {
+		if(!sameTechnique(newName)) {
 			while(actual != null && !updated) {
 				if(actual.getName().equals(nameTechnique)) {
 					actual.setName(newName);
@@ -223,5 +224,25 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 			substraction = -1;
 		}
 		return substraction;
+	}
+	
+	public int techniquesNumber() {
+		int number = 0;
+		Technique actual = first;
+		while(actual != null) {
+			number++;
+			actual = actual.getNext();
+		}
+		return number;
+	}
+	
+	public String theTechniques() {
+		String msg = "";
+		Technique actual = first;
+		while(actual != null) {
+			msg += actual+"\n";
+			actual = actual.getNext();
+		}
+		return msg;
 	}
 }

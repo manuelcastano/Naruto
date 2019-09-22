@@ -92,7 +92,9 @@ public class Clan implements Comparable<Clan>, Serializable{
 		Ninja actual = first;
 		if(first != null && first.getName().equals(nameNinja)) {
 			first = first.getNext();
-			first.setPrevious(null);
+			if(first != null) {
+				first.setPrevious(null);
+			}
 			deleted = true;
 		}
 		else {
@@ -100,9 +102,12 @@ public class Clan implements Comparable<Clan>, Serializable{
 				if(actual.getName().equals(nameNinja)) {
 					actual = actual.getPrevious();
 					actual.setNext(actual.getNext().getNext());
-					actual.getNext().setPrevious(actual);
+					if(actual.getNext() != null) {
+						actual.getNext().setPrevious(actual);
+					}
 					deleted = true;
 				}
+				actual = actual.getNext();
 			}
 		}
 		return deleted;
@@ -222,27 +227,59 @@ public class Clan implements Comparable<Clan>, Serializable{
 			if(e != null) {
 				finded = true;
 			}
+			actual = actual.getNext();
 		}
 		return e;
 	}
 	
-	//Burbuja
+	//Bubble
 	public void orderNinjas() {
+		int ninjas = 0;
 		Ninja actual = first;
 		while(actual != null) {
 			Ninja next = actual.getNext();
 			while(next != null) {
 				if(actual.compare(actual, next) > 0) {
+					if(actual.getPrevious() != null) {
+						actual.getPrevious().setNext(next);
+					}
+					if(next.getNext() != null) {
+						next.getNext().setPrevious(actual);
+					}
+					actual.setNext(next.getNext());
+					next.setPrevious(actual.getPrevious());
 					actual.setPrevious(next);
 					next.setNext(actual);
-					Ninja temp = next;
-					next = actual;
-					actual = temp;
+					next = actual.getNext();
 				}
-				next = next.getNext();
+				else {
+					actual = actual.getNext();
+					next = next.getNext();
+				}
+			} 
+			ninjas++;
+			if(ninjas < ninjasNumber()) {
+				findTheFirst();
+				actual = first;
+				if(actual.getNext() != null) {
+					next = actual.getNext();
+				}
 			}
-			actual = actual.getNext();
+			else {
+				actual = null;
+			}
 		}
+		findTheFirst();
+	}
+	
+	public void findTheFirst() {
+		Ninja actual = first;
+		Ninja theFirst = null;
+		while(actual != null) {
+			theFirst = actual;
+			actual = actual.getPrevious();
+		}
+		first = theFirst;
 	}
 	
 	public String theNinjas() {
@@ -253,5 +290,30 @@ public class Clan implements Comparable<Clan>, Serializable{
 			actual = actual.getNext();
 		}
 		return msg;
+	}
+	
+	public int ninjasNumber() {
+		int ninjas = 0; 
+		Ninja actual = first;
+		while(actual != null) {
+			ninjas++;
+			actual = actual.getNext();
+		}
+		return ninjas;
+	}
+	
+	public String theTechniques() {
+		String msg = "";
+		Ninja actual = first;
+		while(actual != null) {
+			msg += actual.theTechniques();
+			actual = actual.getNext();
+		}
+		return msg;
+	}
+
+	@Override
+	public String toString() {
+		return "name = " + name;
 	}
 }
