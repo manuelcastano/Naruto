@@ -226,16 +226,6 @@ public class Ninja implements Comparable<Ninja>, Comparator<Ninja>, Serializable
 		return substraction;
 	}
 	
-	public int techniquesNumber() {
-		int number = 0;
-		Technique actual = first;
-		while(actual != null) {
-			number++;
-			actual = actual.getNext();
-		}
-		return number;
-	}
-	
 	public String theTechniques() {
 		String msg = "";
 		Technique actual = first;

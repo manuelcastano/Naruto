@@ -37,10 +37,7 @@ public class Game {
 		if(!sameClan(e.getName())) {
 			clans.add(e);
 			added = true;
-			File f = new File(ARCHIVE);
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
-			oos.writeObject(clans);
-			oos.close();
+			edit();
 		}
 		else {
 			throw new SameName();
@@ -60,8 +57,6 @@ public class Game {
 	}
 	
 	public void edit() throws IOException {
-		new File(ARCHIVE).delete();
-		new File(ARCHIVE).createNewFile();
 		File f = new File(ARCHIVE);
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
 		oos.writeObject(clans);
@@ -88,7 +83,7 @@ public class Game {
 	public boolean addTechnique(Technique e, String nameNinja) throws SameName, IOException {
 		boolean added = false;
 		for(int i = 0; i < clans.size() && !added; i++) {
-			if(clans.get(i).ninjaExist(nameNinja)) {
+			if(clans.get(i).sameNinja(nameNinja)) {
 				added = clans.get(i).addTechnique(e, nameNinja);
 				edit();
 			}
@@ -111,7 +106,7 @@ public class Game {
 	public boolean deleteNinja(String nameNinja) throws IOException {
 		boolean deleted = false;
 		for(int i = 0; i < clans.size() && !deleted; i++) {
-			if(clans.get(i).ninjaExist(nameNinja)) {
+			if(clans.get(i).sameNinja(nameNinja)) {
 				deleted = clans.get(i).deleteNinja(nameNinja);
 			}
 		}
@@ -178,6 +173,8 @@ public class Game {
 		}
 		for(int i = 0; i < clans.size() && !updated; i++) {
 			updated = clans.get(i).updateNinjaByName(nameNinja, newName);
+		}
+		if(updated) {
 			edit();
 		}
 		return updated;

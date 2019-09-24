@@ -75,18 +75,6 @@ public class Clan implements Comparable<Clan>, Serializable{
 		return added;
 	}
 	
-	public boolean ninjaExist(String nameNinja) {
-		boolean exist = false;
-		Ninja actual = first;
-		while(actual != null && !exist) {
-			if(actual.getName().equals(nameNinja)) {
-				exist = true;
-			}
-			actual = actual.getNext();
-		}
-		return exist;
-	}
-	
 	public boolean deleteNinja(String nameNinja) {
 		boolean deleted = false;
 		Ninja actual = first;
